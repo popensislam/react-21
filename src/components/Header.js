@@ -9,6 +9,8 @@ const Header = (props) => {
 
     const [ show, setShow ] = useState(false)
 
+    console.log('HELLO')
+
     const handleInc = () => {
         setState(prev => {
             return [ ...prev, {id: 1, title: 'Hello'}, {id: 2, title: 'Bro'}, {id: 3, title: '!'}]
