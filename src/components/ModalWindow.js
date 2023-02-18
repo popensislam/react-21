@@ -1,10 +1,12 @@
-const ModalWindow = ({ handleClose }) => {
+import Form from "./Form";
+
+const ModalWindow = ({ handleClose, handleEdit, handleAdd, currentTodo }) => {
     return (
         <>
             <div className="modalWrapper" onClick={handleClose}>
             </div>
             <div className="modal">
-                <h1 onClick={handleClose}>WORK</h1>
+                <Form handleClose={handleClose} handleEdit={handleEdit} handleAdd={handleAdd} currentTodo={currentTodo}/>
             </div>
         </>
      );
