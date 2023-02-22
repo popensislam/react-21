@@ -1,21 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalWindow from "../components/ModalWindow";
 import Title from "../components/Title";
 import TodoList from "../components/TodoList";
 
-const list = [ 
-    { id: 1, title: 'Go to shop 1', description: 'Some desc'},
-    { id: 2, title: 'Go to shop 2', description: 'Some desc'},
-    { id: 3, title: 'Go to shop 3', description: 'Some desc'},
-    { id: 4, title: 'Go to shop 4', description: 'Some desc'},
-  ]
-
 const MainPage = () => {
 
-    const [ todoList, setTodoList ] = useState(list)
+    const [ todoList, setTodoList ] = useState([])
     const [ isShow, setIsShow] = useState(false)
     const [ currentTodo, setCurrentTodo ] = useState({})
-  
+
     const handleAdd = (data) => {
       const newTodoList = [ ...todoList, { ...data, id: Date.now()} ]
       setTodoList(newTodoList)
@@ -24,6 +17,10 @@ const MainPage = () => {
     const handleDelete = (id) => {
       const newTodoList = todoList.filter((item) => item.id !== id)
   
+      if (newTodoList.length === 0) {
+        localStorage.setItem('list', JSON.stringify(newTodoList))
+      }
+    
       setTodoList(newTodoList)
     }
   
@@ -44,25 +41,51 @@ const MainPage = () => {
       setCurrentTodo(todo)
     }
 
-    const sortByDate = () => {
-        const sorted = todoList.sort((a, b) => b.id - a.id) // desc
-
-        setTodoList([ ...sorted ])
+    const handleClose = () => {
+      setIsShow(false)
+      setCurrentTodo({})
     }
 
-    console.log(todoList)
+    const [ count, setCount ] = useState(0)
+
+    // useEffect(() => {
+    //   if ( count === 10) {
+    //     return
+    //   }
+    //   const timeoutId = setTimeout(() => {
+    //     setCount(prev => prev + 1)
+    //   }, 1000)
+
+    //   return () => {
+    //     clearInterval(timeoutId)
+    //   }
+    // }, [ count ])
+
+    useEffect(() => {
+      const list = JSON.parse(localStorage.getItem('list'))
+      setTodoList(list)
+    }, [])
+
+    useEffect(() => {
+      if ( todoList.length === 0 ) {
+        return
+      }
+
+      localStorage.setItem('list', JSON.stringify(todoList))
+    }, [ todoList ])
 
     return ( 
         <div className="mainPage">
+            <h1>{count}</h1>
+            <h1 onClick={() => setCount(count + 1)}>increse</h1>
             <Title size={26}>
                 Todo List
             </Title>
             <button onClick={() => setIsShow(true)}>Создать таск</button>
-            <button onClick={sortByDate}>sort asc</button>
             <TodoList handleEdit={handleEdit} list={todoList} handleDelete={handleDelete} handleOpen={handleOpen}/>
             {
                 isShow && (
-                <ModalWindow handleEdit={handleEdit} currentTodo={currentTodo} handleAdd={handleAdd} handleClose={() => setIsShow(false)}/>
+                <ModalWindow handleEdit={handleEdit} currentTodo={currentTodo} handleAdd={handleAdd} handleClose={handleClose}/>
                 )
             }
         </div>

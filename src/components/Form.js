@@ -22,6 +22,7 @@ const Form = ({ handleAdd, handleEdit, handleClose, currentTodo }) => {
             handleClose()
         } else {
             handleAdd(value)
+            handleClose()
         }
     }
 
@@ -30,7 +31,7 @@ const Form = ({ handleAdd, handleEdit, handleClose, currentTodo }) => {
         {
             Object.keys(value).map((item) => 
                 item !== 'id' && (
-                    <Input key={item} style={{ border: '1px solid red' }} name={item} value={value[item]} onChange={handleOnChange} placeholder='Search some'/>
+                    <Input key={item} style={{ border: '1px solid red', fontSize: '26px', padding: 10 }} name={item} value={value[item]} onChange={handleOnChange} placeholder='Search some'/>
                 ) 
             )
         }
