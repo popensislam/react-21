@@ -13,7 +13,7 @@ class ErrorBoundary extends Component {
   
     componentDidCatch(error, errorInfo) {
       // Можно также сохранить информацию об ошибке в соответствующую службу журнала ошибок
-      console.log('HELLO WORLD');
+      // console.log('HELLO WORLD');
     }
   
     render() {

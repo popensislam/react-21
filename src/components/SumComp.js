@@ -5,7 +5,7 @@ const SumComp = ({ render }) => {
     const [ sum, setSum ] = useState(2)
     const [ sum2, setSum2 ] = useState(2)
 
-    console.log(render)
+    // console.log(render)
 
     return (
         <>

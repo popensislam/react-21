@@ -1,13 +1,19 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import ModalWindow from "../components/ModalWindow";
 import Title from "../components/Title";
 import TodoList from "../components/TodoList";
+import { $api } from "../requester";
+import { fetchTodosById, fetchTodosByParams } from "../requests";
 
 const MainPage = () => {
 
     const [ todoList, setTodoList ] = useState([])
     const [ isShow, setIsShow] = useState(false)
     const [ currentTodo, setCurrentTodo ] = useState({})
+
+    const [ page, setPage ] = useState(1)
 
     const handleAdd = (data) => {
       const newTodoList = [ ...todoList, { ...data, id: Date.now()} ]
@@ -17,9 +23,9 @@ const MainPage = () => {
     const handleDelete = (id) => {
       const newTodoList = todoList.filter((item) => item.id !== id)
   
-      if (newTodoList.length === 0) {
-        localStorage.setItem('list', JSON.stringify(newTodoList))
-      }
+      // if (newTodoList.length === 0) {
+      //   localStorage.setItem('list', JSON.stringify(newTodoList))
+      // }
     
       setTodoList(newTodoList)
     }
@@ -35,6 +41,15 @@ const MainPage = () => {
     
       setTodoList(newTodoList)
     }
+
+    const handlePrevPage = () => {
+      if (page === 1) return
+      setPage(page - 1)
+  }
+
+  const handleNextPage = () => {
+      setPage(page + 1)
+  }
   
     const handleOpen = (todo) => {
       setIsShow(true)
@@ -62,27 +77,47 @@ const MainPage = () => {
     // }, [ count ])
 
     useEffect(() => {
-      const list = JSON.parse(localStorage.getItem('list'))
-      setTodoList(list)
-    }, [])
+          const params = {
+            _limit: 3,
+            _page: page,
+          }
+          fetchTodosByParams(params).then(({ data }) => {
+            setTodoList(data)
+          })
+    }, [ page ])
 
-    useEffect(() => {
-      if ( todoList.length === 0 ) {
-        return
-      }
+    // useEffect(() => {
+    //   const list = JSON.parse(localStorage.getItem('list'))
+    //   if (list) {
+    //     setTodoList(list)
+    //   }
+    // }, [])
 
-      localStorage.setItem('list', JSON.stringify(todoList))
-    }, [ todoList ])
+    // useEffect(() => {
+    //   if ( todoList.length === 0 ) {
+    //     return
+    //   }
+
+    //   localStorage.setItem('list', JSON.stringify(todoList))
+    // }, [ todoList ])
+
+    console.log(process.env)
 
     return ( 
         <div className="mainPage">
-            <h1>{count}</h1>
-            <h1 onClick={() => setCount(count + 1)}>increse</h1>
             <Title size={26}>
                 Todo List
             </Title>
             <button onClick={() => setIsShow(true)}>Создать таск</button>
-            <TodoList handleEdit={handleEdit} list={todoList} handleDelete={handleDelete} handleOpen={handleOpen}/>
+            <TodoList 
+              page={page} 
+              handleNextPage={handleNextPage} 
+              handlePrevPage={handlePrevPage} 
+              handleEdit={handleEdit} 
+              list={todoList} 
+              handleDelete={handleDelete} 
+              handleOpen={handleOpen}
+            />
             {
                 isShow && (
                 <ModalWindow handleEdit={handleEdit} currentTodo={currentTodo} handleAdd={handleAdd} handleClose={handleClose}/>
