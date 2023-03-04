@@ -1,6 +1,15 @@
-import AboutPage from "../pages/AboutPage"
-import IdTodo from "../pages/IdTodo"
-import MainPage from "../pages/MainPage"
+import React from 'react'
+// import { createBrowserRouter, Link, Outlet } from 'react-router-dom';
+
+// function delayForDemo(promise) {
+//     return new Promise(resolve => {
+//       setTimeout(resolve, 500);
+//     }).then(() => promise);
+// }
+
+const MainPage = React.lazy(() => import("../pages/MainPage"))
+const AboutPage = React.lazy(() => import("../pages/AboutPage"))
+const IdTodo = React.lazy(() => import('../pages/IdTodo'))
 
 export const PATHS = {
     MAIN: '/',
@@ -22,3 +31,34 @@ export const routes = [
         element: <IdTodo/>
     }
 ]
+
+
+// export const routesV6 = createBrowserRouter(
+//     [
+//         {
+//             path: "/",
+//             element: (
+//                   <div>
+//                     <h1>Hello</h1>
+//                     <Link to="main">About Us</Link>
+//                     <Outlet/>
+//                   </div>
+//             ),
+//             loader: () => {
+//                 console.log('Hello')
+//                 return null
+//             },
+//             children: [
+//                 {
+//                     path: "/main",
+//                     element: (
+//                           <div>
+//                             <h1>Hello World Main</h1>
+//                             <Link to="/">Mina Us</Link>
+//                           </div>
+//                     ),
+//                 }
+//             ]
+//         },
+//     ]
+// )

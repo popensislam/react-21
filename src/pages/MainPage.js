@@ -1,18 +1,16 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import ModalWindow from "../components/ModalWindow";
+import { lazy, useContext, useEffect, useState } from "react";
 import Title from "../components/Title";
 import TodoList from "../components/TodoList";
-import { $api } from "../requester";
-import { fetchTodosById, fetchTodosByParams } from "../requests";
+import { fetchTodosByParams } from "../requests";
+import { StoreContext } from "../store/storeContext";
+
+const ModalWindow = lazy(() => import("../components/ModalWindow"))
 
 const MainPage = () => {
 
-    const [ todoList, setTodoList ] = useState([])
+    const { todoList, setTodoList, searchValue, setStatus, status } = useContext(StoreContext)
     const [ isShow, setIsShow] = useState(false)
     const [ currentTodo, setCurrentTodo ] = useState({})
-
     const [ page, setPage ] = useState(1)
 
     const handleAdd = (data) => {
@@ -22,11 +20,6 @@ const MainPage = () => {
   
     const handleDelete = (id) => {
       const newTodoList = todoList.filter((item) => item.id !== id)
-  
-      // if (newTodoList.length === 0) {
-      //   localStorage.setItem('list', JSON.stringify(newTodoList))
-      // }
-    
       setTodoList(newTodoList)
     }
   
@@ -61,47 +54,39 @@ const MainPage = () => {
       setCurrentTodo({})
     }
 
-    const [ count, setCount ] = useState(0)
-
-    // useEffect(() => {
-    //   if ( count === 10) {
-    //     return
-    //   }
-    //   const timeoutId = setTimeout(() => {
-    //     setCount(prev => prev + 1)
-    //   }, 1000)
-
-    //   return () => {
-    //     clearInterval(timeoutId)
-    //   }
-    // }, [ count ])
-
     useEffect(() => {
+          setStatus('pending')
           const params = {
             _limit: 3,
             _page: page,
           }
-          fetchTodosByParams(params).then(({ data }) => {
-            setTodoList(data)
+          fetchTodosByParams(params).then((data) => {
+            if (data.status === 200) {
+              setTodoList(data.data)
+              setStatus('fullfilled')
+            } else {
+              setStatus('rejected')
+            }
           })
-    }, [ page ])
+   }, [ page ])
 
-    // useEffect(() => {
-    //   const list = JSON.parse(localStorage.getItem('list'))
-    //   if (list) {
-    //     setTodoList(list)
-    //   }
-    // }, [])
-
-    // useEffect(() => {
-    //   if ( todoList.length === 0 ) {
-    //     return
-    //   }
-
-    //   localStorage.setItem('list', JSON.stringify(todoList))
-    // }, [ todoList ])
-
-    console.log(process.env)
+    useEffect(() => {
+      if (!searchValue) {
+        setStatus('pending')
+        const params = {
+          _limit: 3,
+          _page: page,
+        }
+        fetchTodosByParams(params).then((data) => {
+          if (data.status === 200) {
+            setTodoList(data.data)
+            setStatus('fullfilled')
+          } else {
+            setStatus('rejected')
+          }
+        })
+      }
+  }, [searchValue])
 
     return ( 
         <div className="mainPage">
@@ -113,8 +98,7 @@ const MainPage = () => {
               page={page} 
               handleNextPage={handleNextPage} 
               handlePrevPage={handlePrevPage} 
-              handleEdit={handleEdit} 
-              list={todoList} 
+              handleEdit={handleEdit}
               handleDelete={handleDelete} 
               handleOpen={handleOpen}
             />
