@@ -1,0 +1,26 @@
+@Import './dark/dark.css';
+@import './light/light.css';
+
+
+.title {
+    color: var(--color)
+}
+
+.authBlock {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.formAuth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.formAuth input {
+    font-size: 30px;
+}
