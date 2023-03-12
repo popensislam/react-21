@@ -1,36 +1,33 @@
-import { getCookie, setCookie } from "helpers/helpers";
-import Cookies from "js-cookie";
-import { useEffect } from "react";
-import { loginFetch, refreshFetch } from "requests/authActions";
+import {getCookie, setCookie} from 'helpers/helpers';
+import Cookies from 'js-cookie';
+import {useEffect} from 'react';
+import {loginFetch, refreshFetch} from 'requests/authActions';
 
 const AuthProvider = ({children}) => {
+  useEffect(() => {
+    const token = getCookie('token');
+    const date = getCookie('minute');
 
+    if (!date) return;
+    if (!token) return;
 
-    useEffect(() => {
-        const token = getCookie('token')
-        const date = getCookie('minute')
+    console.log(token);
 
-        if (!date) return
-        if (!token) return
+    const currentDate = new Date().getMinutes();
 
-        console.log(token)
+    if (Number(date) !== currentDate) {
+      refreshFetch({token: token})
+          .then((data) => {
+            const date = new Date().getMinutes();
+            setCookie('token', data.data.new_token, 1);
+            setCookie('minute', date, 1);
+          });
+    }
+  });
 
-        const currentDate = new Date().getMinutes()
+  return (
+    <>{children}</>
+  );
+};
 
-        if (Number(date) !== currentDate) {
-            refreshFetch({token: token})
-                .then((data) => {
-                    const date = new Date().getMinutes()
-                    setCookie('token', data.data.new_token, 1)
-                    setCookie('minute', date, 1)
-                })
-        }
-
-    })
-
-    return (
-        <>{children}</>
-    );
-}
- 
 export default AuthProvider;

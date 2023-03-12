@@ -1,18 +1,17 @@
-import { useTheme } from 'hooks/useTheme';
-import { useEffect } from 'react';
-import { setCookie } from 'helpers/helpers';
-import 'styles/index.css'
+import {useTheme} from 'hooks/useTheme';
+import {useEffect} from 'react';
+import {setCookie} from 'helpers/helpers';
+import 'styles/index.css';
 import LoginAuth from 'components/LoginAuth';
 import AuthProvider from 'providers/AuthProvider/ui/AuthProvider';
-import { Route, Routes } from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 
 function App() {
-
-  const { theme, toggleTheme } = useTheme()
+  const {theme, toggleTheme} = useTheme();
 
   useEffect(() => {
-    setCookie('token', 'Bearer sfaefad', 1)
-  }, [])
+    setCookie('token', 'Bearer sfaefad', 1);
+  }, []);
 
   return (
     <div className={`app ${theme}`}>
@@ -22,11 +21,11 @@ function App() {
         <Routes>
           <Route path='/' element={
             <div className='authBlock'>
-              <LoginAuth/>
+              <LoginAuth />
             </div>
-            }/>
-  
-          <Route path='/posts' element={<div>posts</div>}/>
+          } />
+
+          <Route path='/posts' element={<div>posts</div>} />
         </Routes>
       </AuthProvider>
     </div>

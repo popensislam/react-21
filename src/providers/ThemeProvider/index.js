@@ -1,8 +1,8 @@
-import { themeContext } from "./model/themeContext"
-import ThemeProvider, { themeVariants } from "./ui/ThemeProvider"
+import {themeContext} from './model/themeContext';
+import ThemeProvider, {themeVariants} from './ui/ThemeProvider';
 
 export {
-    themeVariants,
-    themeContext,
-    ThemeProvider
-}
+  themeVariants,
+  themeContext,
+  ThemeProvider,
+};
